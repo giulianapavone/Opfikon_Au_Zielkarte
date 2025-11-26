@@ -373,7 +373,7 @@ function updateLegend() {
   legendList.innerHTML = '';
 
   layerLegends.forEach(group => {
-    const activeLayers = group.layers.filter(layer => document.getElementById(layer.id).style.display === 'block');
+    const activeLayers = group.layers.filter(layer => getComputedStyle(document.getElementById(layer.id)).display === 'block');
     if (activeLayers.length > 0) {
       // Gruppenüberschrift
       const liGroup = document.createElement('li');
@@ -513,3 +513,4 @@ updateLegend();
 </body>
 
 </html>
+
