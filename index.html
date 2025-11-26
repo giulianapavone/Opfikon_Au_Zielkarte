@@ -535,19 +535,25 @@ function toggleLayer(id, button) {
   const group = exclusiveLayers.find(grp => grp.includes(id));
 
   if(group){
+    // Switch to this layer: hide the other in the group
     group.forEach(layerId => {
       if(layerId !== id){
         const otherLayer = document.getElementById(layerId);
         const otherButton = Array.from(document.querySelectorAll('#buttons button'))
           .find(b => b.getAttribute('onclick')?.includes(layerId));
-        if(getComputedStyle(otherLayer).display === 'block'){
-          otherLayer.style.display = 'none';
-          otherButton?.classList.remove('active');
-        }
+        otherLayer.style.display = 'none';
+        otherButton?.classList.remove('active');
       }
     });
+
+    // Always show the clicked layer
+    el.style.display = 'block';
+    button.classList.add('active');
+    updateLegend();
+    return; // skip standard toggle
   }
 
+  // Standard toggle for non-exclusive layers
   if(el.style.display === 'block'){ 
     el.style.display = 'none'; 
     button.classList.remove('active'); 
@@ -630,6 +636,7 @@ function updateLegend() {
 /* Init */
 document.getElementById('Zielkarte_Basekarte').style.display = 'block';
 document.getElementById('Zielkarte_Glatt').style.display = 'block';
+document.getElementById('Zielkarte_Zentrum_Final').style.display = 'block';
+document.getElementById('Zielkarte_Siedlung_Gemischt').style.display = 'block';
 updateZoomDisplay();
 updateLegend();
-</script>
