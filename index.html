@@ -237,7 +237,6 @@
       <img src="Zielkarte_Zentrum_Final.png" class="layer" id="Zielkarte_Zentrum_Final" alt="Zentrum Final">
       <img src="Zielkarte_Siedlung_Aufstockung.png" class="layer" id="Zielkarte_Siedlung_Aufstockung" alt="Siedlung Aufstockung">
       <img src="Zielkarte_Siedlung_Gemischt.png" class="layer" id="Zielkarte_Siedlung_Gemischt" alt="Siedlung Gemischt">
-      <img src="Zielkarte_Glatt.png" class="layer" id="Zielkarte_Glatt" alt="Glatt">
       <img src="Zielkarte_Bushaltestellen.png" class="layer" id="Zielkarte_Bushaltestellen" alt="Bushaltestellen">
     </div>
   </div>
@@ -503,97 +502,6 @@ async function exportLegend() {
   link.click();
 }
 
-/* Init */
-document.getElementById('Zielkarte_Basekarte').style.display='block';
-document.getElementById('Zielkarte_Glatt').style.display='block';
-updateZoomDisplay();
-updateLegend();
-</script>
-</body>
-
-</html>
-
-
-<script>
-let zoom = 100;
-function updateZoomDisplay() { 
-  document.getElementById('zoom-default').textContent = zoom + '%'; 
-}
-function zoomMap(change) { 
-  zoom += change; 
-  if(zoom < 50) zoom = 50; 
-  if(zoom > 200) zoom = 200; 
-  document.getElementById('map-inner').style.transform = `scale(${zoom / 100})`; 
-  updateZoomDisplay(); 
-}
-function zoomDefault() { 
-  zoom = 100; 
-  document.getElementById('map-inner').style.transform = 'scale(1)'; 
-  updateZoomDisplay(); 
-}
-
-/* Layer toggle */
-function toggleLayer(id, button) {
-  const el = document.getElementById(id);
-
-  // Exclusivgruppen, immer mind. ein Layer sichtbar
-  const exclusiveLayers = [
-    ["Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Aufstockung"],
-    ["Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Alt"]
-  ];
-
-  const group = exclusiveLayers.find(grp => grp.includes(id));
-
-  if (group) {
-    // Wenn der Layer schon aktiv ist, nix tun
-    if (el.style.display === 'block') return;
-
-    // Schalte alle anderen in der Gruppe aus und diesen Layer ein
-    group.forEach(layerId => {
-      const layerEl = document.getElementById(layerId);
-      const layerButton = Array.from(document.querySelectorAll('#buttons button'))
-        .find(b => b.getAttribute('onclick')?.includes(layerId));
-
-      if (layerId === id) {
-        layerEl.style.display = 'block';
-        layerButton?.classList.add('active');
-      } else {
-        layerEl.style.display = 'none';
-        layerButton?.classList.remove('active');
-      }
-    });
-
-    updateLegend();
-    return; // kein Standardtoggle
-  }
-
-  // Standardtoggle für nicht-exklusive Layer
-  if (el.style.display === 'block') {
-    el.style.display = 'none';
-    button.classList.remove('active');
-  } else {
-    el.style.display = 'block';
-    button.classList.add('active');
-  }
-
-  updateLegend();
-}
-
-/* Leere Legenden für alle Layer, Bushaltestellen mit Icon */
-const layerLegends = [
-  { title: "Buslinie", layers: [{ id: "Zielkarte_Buslinie", items: [] }] },
-  { title: "Wege", layers: [{ id: "Zielkarte_Wege", items: [] }] },
-  { title: "Zentrum Alt", layers: [{ id: "Zielkarte_Zentrum_Alt", items: [] }] },
-  { title: "Zentrum Final", layers: [{ id: "Zielkarte_Zentrum_Final", items: [] }] },
-  { title: "Siedlung Aufstockung", layers: [{ id: "Zielkarte_Siedlung_Aufstockung", items: [] }] },
-  { title: "Siedlung Gemischt", layers: [{ id: "Zielkarte_Siedlung_Gemischt", items: [] }] },
-  { title: "Glatt", layers: [{ id: "Zielkarte_Glatt", items: [] }] },
-  { title: "Basekarte", layers: [{ id: "Zielkarte_Basekarte", items: [] }] },
-  { title: "Bushaltestellen", layers: [{ id: "Zielkarte_Bushaltestellen", items: [
-    { label: "Bushaltestellen", icon: "Bushaltestellensymbol.png" }
-  ]}] }
-];
-
 /* Legende updaten */
 function adjustLegendPadding() {
   const source = document.getElementById('source-tab');
@@ -654,6 +562,3 @@ document.getElementById('Zielkarte_Zentrum_Final').style.display = 'block';
 document.getElementById('Zielkarte_Siedlung_Gemischt').style.display = 'block';
 updateZoomDisplay();
 updateLegend();
-
-
-
