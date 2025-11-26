@@ -60,9 +60,9 @@
   #Zielkarte_Buslinie { z-index: 0; }
   #Zielkarte_Wege { z-index: 1; }
   #Zielkarte_Zentrum_Alt { z-index: 2; }
-  #Zielkarte_Zentrum_Final { z-index: 3; }
+  #Zielkarte_Zentrum_Final { z-index: 3; display: block; }
   #Zielkarte_Siedlung_Aufstockung { z-index: 4; }
-  #Zielkarte_Siedlung_Gemischt { z-index: 5; }
+  #Zielkarte_Siedlung_Gemischt { z-index: 5; display: block; }
   #Zielkarte_Glatt { z-index: 6; display: block; }
   #Zielkarte_Basekarte { z-index: 7; display: block; }
   #Zielkarte_Bushaltestellen { z-index: 8; }
@@ -526,7 +526,7 @@ function zoomDefault() {
 function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
-  // Exclusivgruppen
+  // Exclusivgruppen, immer mind. ein Layer sichtbar
   const exclusiveLayers = [
     ["Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Aufstockung"],
     ["Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Alt"]
@@ -534,32 +534,36 @@ function toggleLayer(id, button) {
 
   const group = exclusiveLayers.find(grp => grp.includes(id));
 
-  if(group){
-    // Switch to this layer: hide the other in the group
+  if (group) {
+    // Wenn der Layer schon aktiv ist, nix tun
+    if (el.style.display === 'block') return;
+
+    // Schalte alle anderen in der Gruppe aus und diesen Layer ein
     group.forEach(layerId => {
-      if(layerId !== id){
-        const otherLayer = document.getElementById(layerId);
-        const otherButton = Array.from(document.querySelectorAll('#buttons button'))
-          .find(b => b.getAttribute('onclick')?.includes(layerId));
-        otherLayer.style.display = 'none';
-        otherButton?.classList.remove('active');
+      const layerEl = document.getElementById(layerId);
+      const layerButton = Array.from(document.querySelectorAll('#buttons button'))
+        .find(b => b.getAttribute('onclick')?.includes(layerId));
+
+      if (layerId === id) {
+        layerEl.style.display = 'block';
+        layerButton?.classList.add('active');
+      } else {
+        layerEl.style.display = 'none';
+        layerButton?.classList.remove('active');
       }
     });
 
-    // Always show the clicked layer
-    el.style.display = 'block';
-    button.classList.add('active');
     updateLegend();
-    return; // skip standard toggle
+    return; // kein Standardtoggle
   }
 
-  // Standard toggle for non-exclusive layers
-  if(el.style.display === 'block'){ 
-    el.style.display = 'none'; 
-    button.classList.remove('active'); 
-  } else { 
-    el.style.display = 'block'; 
-    button.classList.add('active'); 
+  // Standardtoggle für nicht-exklusive Layer
+  if (el.style.display === 'block') {
+    el.style.display = 'none';
+    button.classList.remove('active');
+  } else {
+    el.style.display = 'block';
+    button.classList.add('active');
   }
 
   updateLegend();
@@ -640,3 +644,4 @@ document.getElementById('Zielkarte_Zentrum_Final').style.display = 'block';
 document.getElementById('Zielkarte_Siedlung_Gemischt').style.display = 'block';
 updateZoomDisplay();
 updateLegend();
+
