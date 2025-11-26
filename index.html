@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <title>Opfikon Au, Zielkarte</title>
 <style>
   * {
@@ -187,7 +188,7 @@
   }
 
   /* Mobile styles */
-  @media (max-width: 480px) {
+  @media (max-width: 600px) {
     body {
       flex-direction: column;
       height: auto;
@@ -229,16 +230,15 @@
 <div id="main-column">
   <div id="map-container">
     <div id="map-inner">
-      <img src="Zielkarte_Basekarte.png" class="layer" id="Zielkarte_Basekarte">
-      <img src="Zielkarte_Glatt.png" class="layer" id="Zielkarte_Glatt">
-      <img src="Zielkarte_Siedlung_Gemischt.png" class="layer" id="Zielkarte_Siedlung_Gemischt">
-      <img src="Zielkarte_Siedlung_Aufstockung.png" class="layer" id="Zielkarte_Siedlung_Aufstockung">
-      <img src="Zielkarte_Zentrum_Final.png" class="layer" id="Zielkarte_Zentrum_Final">
-      <img src="Zielkarte_Zentrum_Alt.png" class="layer" id="Zielkarte_Zentrum_Alt">
-      <img src="Zielkarte_Wege.png" class="layer" id="Zielkarte_Wege">
-      <img src="Zielkarte_Buslinie.png" class="layer" id="Zielkarte_Buslinie">
-      <img src="Zielkarte_Bushaltestellen.png" class="layer" id="Zielkarte_Bushaltestellen">
-
+      <img src="Zielkarte_Basekarte.png" class="layer" id="Zielkarte_Basekarte" alt="Basekarte">
+      <img src="Zielkarte_Buslinie.png" class="layer" id="Zielkarte_Buslinie" alt="Buslinie">
+      <img src="Zielkarte_Wege.png" class="layer" id="Zielkarte_Wege" alt="Wege">
+      <img src="Zielkarte_Zentrum_Alt.png" class="layer" id="Zielkarte_Zentrum_Alt" alt="Zentrum Alt">
+      <img src="Zielkarte_Zentrum_Final.png" class="layer" id="Zielkarte_Zentrum_Final" alt="Zentrum Final">
+      <img src="Zielkarte_Siedlung_Aufstockung.png" class="layer" id="Zielkarte_Siedlung_Aufstockung" alt="Siedlung Aufstockung">
+      <img src="Zielkarte_Siedlung_Gemischt.png" class="layer" id="Zielkarte_Siedlung_Gemischt" alt="Siedlung Gemischt">
+      <img src="Zielkarte_Glatt.png" class="layer" id="Zielkarte_Glatt" alt="Glatt">
+      <img src="Zielkarte_Bushaltestellen.png" class="layer" id="Zielkarte_Bushaltestellen" alt="Bushaltestellen">
     </div>
   </div>
 </div>
@@ -256,13 +256,14 @@
 
   <!-- Layer buttons -->
   <div id="buttons">
-     <button onclick="toggleLayer('Zielkarte_Siedlung_Gemischt', this)">Siedlung Gemischt</button>
-     <button onclick="toggleLayer('Zielkarte_Siedlung_Aufstockung', this)">Siedlung Aufstockung</button>
-     <button onclick="toggleLayer('Zielkarte_Zentrum_Final', this)">Zentrum Final</button>
-     <button onclick="toggleLayer('Zielkarte_Zentrum_Alt', this)">Zentrum Alt</button>
-     <button onclick="toggleLayer('Zielkarte_Wege', this)">Wege</button>
-     <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Buslinie</button>
-     <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bushaltestellen</button>
+    <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Buslinie</button>
+    <button onclick="toggleLayer('Zielkarte_Wege', this)">Wege</button>
+    <button onclick="toggleLayer('Zielkarte_Zentrum_Alt', this)">Zentrum Alt</button>
+    <button onclick="toggleLayer('Zielkarte_Zentrum_Final', this)">Zentrum Final</button>
+    <button onclick="toggleLayer('Zielkarte_Siedlung_Aufstockung', this)">Siedlung Aufstockung</button>
+    <button onclick="toggleLayer('Zielkarte_Siedlung_Gemischt', this)">Siedlung Gemischt</button>
+    <button onclick="toggleLayer('Zielkarte_Glatt', this)">Glatt</button>
+    <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bushaltestellen</button>
   </div>
 
   <!-- Legend -->
@@ -274,7 +275,8 @@
   <!-- Quellen & Export - inside sidebar at bottom -->
   <div id="source-tab">
     <div>Quellen: GIS-ZH, Swisstopo & Google Maps</div>
-    <button onclick="exportVisibleLayers()">Exportieren</button>
+    <button onclick="exportVisibleLayers()">Karte Exportieren</button>
+    <button onclick="exportLegend()">Legende Exportieren</button>
   </div>
 </div>
 
@@ -304,41 +306,125 @@ function zoomDefault() {
 function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
-  // Exclusivgruppen (nur 1 aktiv gleichzeitig)
+  // Exclusivgruppen
   const exclusiveLayers = [
     ["Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Aufstockung"],
     ["Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Alt"]
   ];
 
-  // Prüfen, ob dieses ID in einer Exklusivgruppe ist
   const group = exclusiveLayers.find(grp => grp.includes(id));
 
-  if (group) {
+  if(group){
     group.forEach(layerId => {
-      if (layerId !== id) {
-        const otherLayer = document.getElementById(layerId);
-        const otherButton = Array.from(document.querySelectorAll('#buttons button'))
-          .find(b => b.getAttribute('onclick')?.includes(layerId));
-
-        if (getComputedStyle(otherLayer).display === 'block') {
-          otherLayer.style.display = 'none';
+      if(layerId!==id){
+        const otherLayer=document.getElementById(layerId);
+        const otherButton=Array.from(document.querySelectorAll('#buttons button'))
+          .find(b=>b.getAttribute('onclick')?.includes(layerId));
+        if(getComputedStyle(otherLayer).display==='block'){
+          otherLayer.style.display='none';
           otherButton?.classList.remove('active');
         }
       }
     });
   }
 
-  // Toggle the clicked layer
-  if (el.style.display === 'block') {
-    el.style.display = 'none';
-    button.classList.remove('active');
-  } else {
-    el.style.display = 'block';
-    button.classList.add('active');
-  }
+  if(el.style.display==='block'){ el.style.display='none'; button.classList.remove('active'); }
+  else { el.style.display='block'; button.classList.add('active'); }
+
+  updateLegend();
 }
 
-/* Export */
+/* Layer Legendeninfos */
+const layerLegends = [
+  { title: "Buslinie", layers: [{ id: "Zielkarte_Buslinie", items: [] }] },
+  { title: "Wege", layers: [{ id: "Zielkarte_Wege", items: [] }] },
+  { title: "Zentrum Alt", layers: [{ id: "Zielkarte_Zentrum_Alt", items: [] }] },
+  { title: "Zentrum Final", layers: [{ id: "Zielkarte_Zentrum_Final", items: [] }] },
+  { title: "Siedlung Aufstockung", layers: [{ id: "Zielkarte_Siedlung_Aufstockung", items: [] }] },
+  { title: "Siedlung Gemischt", layers: [{ id: "Zielkarte_Siedlung_Gemischt", items: [] }] },
+  { title: "Glatt", layers: [{ id: "Zielkarte_Glatt", items: [] }] },
+  { title: "Basekarte", layers: [{ id: "Zielkarte_Basekarte", items: [] }] },
+  { title: "Bushaltestellen", layers: [{ id: "Zielkarte_Bushaltestellen", items: [
+    { label: "Bushaltestellen", icon: "Bushaltestellensymbol.png" }
+  ]}] }
+];
+
+/* Legende updaten */
+/* Platz für Quelle unten */
+function adjustLegendPadding() {
+  const source = document.getElementById('source-tab');
+  const legend = document.getElementById('legend-container');
+  legend.style.paddingBottom = source.offsetHeight + 'px';
+}
+function updateLegend() {
+  const legendList = document.getElementById('legend-list');
+  const legendTitle = document.getElementById('legend-title');
+  legendList.innerHTML = '';
+
+  layerLegends.forEach(group => {
+    const activeLayers = group.layers.filter(layer => document.getElementById(layer.id).style.display === 'block');
+    if (activeLayers.length > 0) {
+      // Gruppenüberschrift
+      const liGroup = document.createElement('li');
+      liGroup.innerHTML = `<strong>${group.title}</strong>`;
+      liGroup.style.marginTop = '6px';
+      liGroup.style.fontSize = '15px';
+      legendList.appendChild(liGroup);
+
+      activeLayers.forEach(layer => {
+        layer.items.forEach(item => {
+          // Untertitel
+          if (item.subtitle) {
+            const liSub = document.createElement('li');
+            liSub.textContent = item.label;
+            liSub.style.fontWeight = 'bold';
+            liSub.style.fontSize = '13px';
+            legendList.appendChild(liSub);
+            return;
+          }
+
+          // Symbol erstellen
+          const li = document.createElement('li');
+          let symbol;
+
+          if (item.icon) {
+            symbol = document.createElement('img');
+            symbol.src = item.icon;
+            symbol.style.width = '20px';
+            symbol.style.height = '20px';
+            symbol.style.objectFit = 'contain';
+            symbol.style.margin = '2px';
+          } else if (item.line) {
+            symbol = document.createElement('span');
+            symbol.style.display = 'inline-block';
+            symbol.style.width = '20px';
+            symbol.style.height = '4px';
+            symbol.style.backgroundImage = `linear-gradient(to right, ${item.color} 100%, transparent 0)`;
+            symbol.style.backgroundSize = '100% 100%';
+            symbol.style.backgroundRepeat = 'no-repeat';
+            symbol.style.margin = '2px';
+          } else if (item.color) {
+            symbol = document.createElement('span');
+            symbol.style.display = 'inline-block';
+            symbol.style.width = '20px';
+            symbol.style.height = '20px';
+            symbol.style.backgroundColor = item.color;
+            symbol.style.margin = '2px';
+          }
+
+          li.appendChild(symbol);
+          li.appendChild(document.createTextNode(item.label));
+          legendList.appendChild(li);
+        });
+      });
+    }
+  });
+
+  legendTitle.style.display = legendList.children.length > 0 ? 'block' : 'none';
+  adjustLegendPadding();
+}
+ 
+/* Export Map */
 async function exportVisibleLayers() {
   const mapInner = document.getElementById('map-inner');
   const allLayers = Array.from(mapInner.querySelectorAll('.layer'));
@@ -368,76 +454,133 @@ async function exportVisibleLayers() {
   }
 
   const link = document.createElement('a');
-  link.download = 'Analysekarte_Export.png';
+  link.download = 'Analysekarte.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
 }
 
-/* Layer Legendeninfos */
+/* Export Legend */
+async function exportLegend() {
+  const legend = document.getElementById('legend-container');
+  const legendList = document.getElementById('legend-list');
+
+  if (legendList.children.length === 0) {
+    alert("Keine Legendeninformationen zum Exportieren!");
+    return;
+  }
+
+  // Clone legend for export with small padding
+  const exportWrapper = legend.cloneNode(true);
+  exportWrapper.style.position = 'absolute';
+  exportWrapper.style.left = '-1000px'; // move offscreen
+  exportWrapper.style.top = '0';
+  exportWrapper.style.width = legend.offsetWidth + 4 + 'px'; // +2px left +2px right
+  exportWrapper.style.padding = '2px';
+  exportWrapper.style.height = 'auto';
+  exportWrapper.style.backgroundColor = 'white';
+  document.body.appendChild(exportWrapper);
+
+  const canvas = await html2canvas(exportWrapper, {
+    backgroundColor: 'white',
+    scale: 4
+  });
+
+  document.body.removeChild(exportWrapper);
+
+  const link = document.createElement('a');
+  link.download = 'Analysekarte_Legende.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+/* Init */
+document.getElementById('Zielkarte_Basekarte').style.display='block';
+document.getElementById('Zielkarte_Glatt').style.display='block';
+updateZoomDisplay();
+updateLegend();
+</script>
+</body>
+
+</html>
+
+
+<script>
+let zoom = 100;
+function updateZoomDisplay() { 
+  document.getElementById('zoom-default').textContent = zoom + '%'; 
+}
+function zoomMap(change) { 
+  zoom += change; 
+  if(zoom < 50) zoom = 50; 
+  if(zoom > 200) zoom = 200; 
+  document.getElementById('map-inner').style.transform = `scale(${zoom / 100})`; 
+  updateZoomDisplay(); 
+}
+function zoomDefault() { 
+  zoom = 100; 
+  document.getElementById('map-inner').style.transform = 'scale(1)'; 
+  updateZoomDisplay(); 
+}
+
+/* Layer toggle */
+function toggleLayer(id, button) {
+  const el = document.getElementById(id);
+
+  // Exclusivgruppen
+  const exclusiveLayers = [
+    ["Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Aufstockung"],
+    ["Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Alt"]
+  ];
+
+  const group = exclusiveLayers.find(grp => grp.includes(id));
+
+  if(group){
+    group.forEach(layerId => {
+      if(layerId !== id){
+        const otherLayer = document.getElementById(layerId);
+        const otherButton = Array.from(document.querySelectorAll('#buttons button'))
+          .find(b => b.getAttribute('onclick')?.includes(layerId));
+        if(getComputedStyle(otherLayer).display === 'block'){
+          otherLayer.style.display = 'none';
+          otherButton?.classList.remove('active');
+        }
+      }
+    });
+  }
+
+  if(el.style.display === 'block'){ 
+    el.style.display = 'none'; 
+    button.classList.remove('active'); 
+  } else { 
+    el.style.display = 'block'; 
+    button.classList.add('active'); 
+  }
+
+  updateLegend();
+}
+
+/* Leere Legenden für alle Layer, Bushaltestellen mit Icon */
 const layerLegends = [
-  { title: "Bauzonen", layers: [{ id: "Analysekarte-Bauzonen", items: [
-    { label: "WG3", color: "#ffd4d0" },
-    { label: "W4", color: "#ffded0" },
-    { label: "W3", color: "#ffefd0" },
-    { label: "W2d", color: "#fff7d0" }
-  ]}]},
-  { title: "Baujahr", layers: [{ id: "Analysekarte-Gebaeudealter", items: [
-    { label: "1926-1950", color: "#ab3087" },
-    { label: "1951-1960", color: "#ec5689" },
-    { label: "1961-1970", color: "#f4737e" },
-    { label: "1971-1980", color: "#f5926e" },
-    { label: "1981-1990", color: "#edb066" },
-    { label: "1991-2000", color: "#e0cb6e" },
-    { label: "2001-2010", color: "#c8e17c" },
-    { label: "2011-heute", color: "#88e17c" }
-  ]}]},
-  { title: "Grundeigentümer", layers: [{ id: "Analysekarte-Eigentuemer", items: [
-    { label: "Stockwerkeigentum", color: "#999999" },
-    { label: "Ein Farbton pro Partie:", subtitle: true },
-    { label: "Genossenschaften", gradient: "linear-gradient(to right,#64b5f6,#1976d2)" },
-    { label: "Aktiengesellschaften", gradient: "linear-gradient(to right,#ffc1c1,#8b0000)" },
-    { label: "Private Eigentümer", gradient: "linear-gradient(to right,#d5f5e3,#0a3211)" }
-  ]}]},
-  { title: "Verkehr", layers: [
-    { id: "Analysekarte-Fusswege", items: [
-      { label: "Fussgängerzugängliche Wege", line: true, color: "#ee000b" },
-      { label: "fehlende Fusswege", stripes: true, color: "#ee000b" }
-    ]},
-    { id: "Analysekarte-Fussgaengerstreifen", items: [
-      { label: "Fussgängerstreifen", icon: "Fussgaengerstreifensymbol.png" }
-    ]},
-    { id: "Analysekarte-Velowege", items: [
-      { label: "Veloweg", line: true, color: "#000aee" }
-    ]},
-    { id: "Analysekarte-Busstationen", items: [
-      { label: "Bushaltestellen", icon: "Bushaltestellensymbol.png" }
-    ]},
-    { id: "Analysekarte-Unfaelle", items: [
-      { label: "Unfälle von 2011 bis 2025", icon: "Unfaellesymbol.png" }
-    ]}
-  ]},
-  { title: "Strassenlärm (06-22 Uhr)", layers: [{ id: "Analysekarte-Strassenlaerm", items: [
-    { label: ">= 75 dB(A)", color: "#787fab" },
-    { label: "70-74.9 dB(A)", color: "#bfadcc" },
-    { label: "65-69.9 dB(A)", color: "#aa6974" },
-    { label: "60-64.9 dB(A)", color: "#eb7878" },
-    { label: "55-59.9 dB(A)", color: "#ee966e" },
-    { label: "50-54.9 dB(A)", color: "#f9cc85" },
-    { label: "45-49.9 dB(A)", color: "#eee86e" },
-    { label: "40-44.9 dB(A)", color: "#677b64" }
-  ]}]},
-  { title: "Fluglärm", layers: [{ id: "Analysekarte-Fluglaerm", items: [
-    { label: "65 dB(A)", line: true, color: "#007d1d" }
-  ]}]}
+  { title: "Buslinie", layers: [{ id: "Zielkarte_Buslinie", items: [] }] },
+  { title: "Wege", layers: [{ id: "Zielkarte_Wege", items: [] }] },
+  { title: "Zentrum Alt", layers: [{ id: "Zielkarte_Zentrum_Alt", items: [] }] },
+  { title: "Zentrum Final", layers: [{ id: "Zielkarte_Zentrum_Final", items: [] }] },
+  { title: "Siedlung Aufstockung", layers: [{ id: "Zielkarte_Siedlung_Aufstockung", items: [] }] },
+  { title: "Siedlung Gemischt", layers: [{ id: "Zielkarte_Siedlung_Gemischt", items: [] }] },
+  { title: "Glatt", layers: [{ id: "Zielkarte_Glatt", items: [] }] },
+  { title: "Basekarte", layers: [{ id: "Zielkarte_Basekarte", items: [] }] },
+  { title: "Bushaltestellen", layers: [{ id: "Zielkarte_Bushaltestellen", items: [
+    { label: "Bushaltestellen", icon: "Bushaltestellensymbol.png" }
+  ]}] }
 ];
 
 /* Legende updaten */
-/* Platz für Quelle unten */
 function adjustLegendPadding() {
   const source = document.getElementById('source-tab');
   const legend = document.getElementById('legend-container');
   legend.style.paddingBottom = source.offsetHeight + 'px';
 }
+
 function updateLegend() {
   const legendList = document.getElementById('legend-list');
   const legendTitle = document.getElementById('legend-title');
@@ -445,7 +588,7 @@ function updateLegend() {
 
   layerLegends.forEach(group => {
     const activeLayers = group.layers.filter(layer => document.getElementById(layer.id).style.display === 'block');
-    if (activeLayers.length > 0) {
+    if(activeLayers.length > 0) {
       const liGroup = document.createElement('li');
       liGroup.innerHTML = `<strong>${group.title}</strong>`;
       liGroup.style.marginTop = '6px';
@@ -454,34 +597,25 @@ function updateLegend() {
 
       activeLayers.forEach(layer => {
         layer.items.forEach(item => {
-          if (item.subtitle) {
-            const liSub = document.createElement('li');
-            liSub.textContent = item.label;
-            liSub.style.fontWeight = 'bold';
-            liSub.style.fontSize = '13px';
-            legendList.appendChild(liSub);
-            return;
-          }
-
           const li = document.createElement('li');
-          const symbol = document.createElement('span');
+          let symbol;
 
-          if (item.icon) {
-            symbol.style.backgroundImage = `url('${item.icon}')`;
-          } else if (item.line) {
-            symbol.style.backgroundImage = `linear-gradient(to right, ${item.color} 100%, transparent 0)`;
-            symbol.style.backgroundSize = '100% 4px';
-            symbol.style.backgroundPosition = 'center';
-            symbol.style.backgroundRepeat = 'no-repeat';
-          } else if (item.stripes) {
-            symbol.style.backgroundImage = `repeating-linear-gradient(to right, ${item.color} 0 2px, white 2px 4px)`;
-          } else if (item.gradient) {
-            symbol.style.backgroundImage = item.gradient;
-          } else if (item.color) {
+          if(item.icon){
+            symbol = document.createElement('img');
+            symbol.src = item.icon;
+            symbol.style.width = '20px';
+            symbol.style.height = '20px';
+            symbol.style.objectFit = 'contain';
+            symbol.style.margin = '2px';
+          } else if(item.color){
+            symbol = document.createElement('span');
+            symbol.style.width = '20px';
+            symbol.style.height = '20px';
             symbol.style.backgroundColor = item.color;
+            symbol.style.margin = '2px';
           }
 
-          li.appendChild(symbol);
+          if(symbol) li.appendChild(symbol);
           li.appendChild(document.createTextNode(item.label));
           legendList.appendChild(li);
         });
@@ -494,14 +628,8 @@ function updateLegend() {
 }
 
 /* Init */
-document.getElementById('Analysekarte-Basekarte').style.display = 'block';
-document.getElementById('Analysekarte-Glatt').style.display = 'block';
+document.getElementById('Zielkarte_Basekarte').style.display = 'block';
+document.getElementById('Zielkarte_Glatt').style.display = 'block';
 updateZoomDisplay();
 updateLegend();
 </script>
-</body>
-
-</html>
-
-
-
