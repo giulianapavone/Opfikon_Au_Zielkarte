@@ -58,12 +58,12 @@
 
   /* Layer order */
   #Zielkarte_Buslinie { z-index: 0; }
-  #Zielkarte_Wege { z-index: 1; }
-  #Zielkarte_Zentrum_Alt { z-index: 2; }
-  #Zielkarte_Zentrum_Final { z-index: 3; display: block; }
-  #Zielkarte_Siedlung_Aufstockung { z-index: 4; }
-  #Zielkarte_Siedlung_Gemischt { z-index: 5; display: block; }
-  #Zielkarte_Glatt { z-index: 6; display: block; }
+  #Zielkarte_Zentrum_Alt { z-index: 1; }
+  #Zielkarte_Zentrum_Final { z-index: 2; display: block; }
+  #Zielkarte_Siedlung_Aufstockung { z-index: 3; }
+  #Zielkarte_Siedlung_Gemischt { z-index: 4; display: block; }
+  #Zielkarte_Glatt { z-index: 5; display: block; }
+  #Zielkarte_Wege { z-index: 6; }
   #Zielkarte_Basekarte { z-index: 7; display: block; }
   #Zielkarte_Bushaltestellen { z-index: 8; }
 
@@ -336,7 +336,7 @@ function toggleLayer(id, button) {
 
 /* Layer Legendeninfos */
 const layerLegends = [
-  { layers: [{ id: "Zielkarte_Basekarte", items: [
+  { title: "", layers: [{ id: "Zielkarte_Basekarte", items: [
       { label: "Laden", icon: "Grocery.png" },
       { label: "Bank", icon: "Bench.png" },
       { label: "Durchgang", icon: "Walkway.png" },
@@ -348,13 +348,13 @@ const layerLegends = [
       { label: "Restaurant", icon: "Restaurant.png" },
       { label: "Brunnen", icon: "Fountain.png" }
   ]}] },
-  { layers: [{ id: "Zielkarte_Wege", items: [
+  { title: "", layers: [{ id: "Zielkarte_Wege", items: [
       { label: "Fehlende oder zu Verbessernde Wege", line: true, color: "#c30c00" }
   ]}] },
-  { layers: [{ id: "Zielkarte_Bushaltestellen", items: [
+  { title: "", layers: [{ id: "Zielkarte_Bushaltestellen", items: [
     { label: "Bushaltestellen", icon: "Bushaltestellensymbol.png" }
   ]}] },
-   { layers: [{ id: "Zielkarte_Buslinie", items: [
+   { title: "", layers: [{ id: "Zielkarte_Buslinie", items: [
       {label: "Geplante Buslinie", line: true, color: "#003399" }
   ]}] }
 ];
@@ -654,5 +654,6 @@ document.getElementById('Zielkarte_Zentrum_Final').style.display = 'block';
 document.getElementById('Zielkarte_Siedlung_Gemischt').style.display = 'block';
 updateZoomDisplay();
 updateLegend();
+
 
 
