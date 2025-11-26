@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Opfikon Au, Analysekarte</title>
+<title>Opfikon Au, Zielkarte</title>
 <style>
   * {
     margin: 0;
@@ -232,18 +232,16 @@
 <div id="main-column">
   <div id="map-container">
     <div id="map-inner">
-      <img src="Analysekarte-Basekarte.png" class="layer" id="Analysekarte-Basekarte" alt="Basekarte">
-      <img src="Analysekarte-Bauzonen.png" class="layer" id="Analysekarte-Bauzonen" alt="Bauzonen">
-      <img src="Analysekarte-Strassenlaerm.png" class="layer" id="Analysekarte-Strassenlaerm" alt="Strassenlärm">
-      <img src="Analysekarte-Glatt.png" class="layer" id="Analysekarte-Glatt" alt="Glatt">
-      <img src="Analysekarte-Gebaeudealter.png" class="layer" id="Analysekarte-Gebaeudealter" alt="Gebäudealter">
-      <img src="Analysekarte-Fusswege.png" class="layer" id="Analysekarte-Fusswege" alt="Fusswege">
-      <img src="Analysekarte-Velowege.png" class="layer" id="Analysekarte-Velowege" alt="Velowege">
-      <img src="Analysekarte-Fluglaerm.png" class="layer" id="Analysekarte-Fluglaerm" alt="Fluglärm">
-      <img src="Analysekarte-Unfaelle.png" class="layer" id="Analysekarte-Unfaelle" alt="Unfälle">
-      <img src="Analysekarte-Fussgaengerstreifen.png" class="layer" id="Analysekarte-Fussgaengerstreifen" alt="Fussgängerstreifen">
-      <img src="Analysekarte-Busstationen.png" class="layer" id="Analysekarte-Busstationen" alt="Busstationen">
-      <img src="Analysekarte-Eigentuemer.png" class="layer" id="Analysekarte-Eigentuemer" alt="Eigentümer">
+      <img src="Zielkarte_Basekarte.png" class="layer" id="Zielkarte_Basekarte">
+      <img src="Zielkarte_Glatt.png" class="layer" id="Zielkarte_Glatt">
+      <img src="Zielkarte_Siedlung_Gemischt.png" class="layer" id="Zielkarte_Siedlung_Gemischt">
+      <img src="Zielkarte_Siedlung_Aufstockung.png" class="layer" id="Zielkarte_Siedlung_Aufstockung">
+      <img src="Zielkarte_Zentrum_Final.png" class="layer" id="Zielkarte_Zentrum_Final">
+      <img src="Zielkarte_Zentrum_Alt.png" class="layer" id="Zielkarte_Zentrum_Alt">
+      <img src="Zielkarte_Wege.png" class="layer" id="Zielkarte_Wege">
+      <img src="Zielkarte_Buslinie.png" class="layer" id="Zielkarte_Buslinie">
+      <img src="Zielkarte_Bushaltestellen.png" class="layer" id="Zielkarte_Busaltestellen">
+
     </div>
   </div>
 </div>
@@ -261,16 +259,13 @@
 
   <!-- Layer buttons -->
   <div id="buttons">
-    <button onclick="toggleLayer('Analysekarte-Bauzonen', this)">Bauzonen</button>
-    <button onclick="toggleLayer('Analysekarte-Gebaeudealter', this)">Gebäudealter</button>
-    <button onclick="toggleLayer('Analysekarte-Eigentuemer', this)">Grundeigentümer</button>
-    <button onclick="toggleLayer('Analysekarte-Fusswege', this)">Fusswege</button>
-    <button onclick="toggleLayer('Analysekarte-Fussgaengerstreifen', this)">Fussgängerstreifen</button>
-    <button onclick="toggleLayer('Analysekarte-Velowege', this)">Velowege</button>
-    <button onclick="toggleLayer('Analysekarte-Busstationen', this)">Busstationen</button>
-    <button onclick="toggleLayer('Analysekarte-Unfaelle', this)">Unfälle</button>
-    <button onclick="toggleLayer('Analysekarte-Strassenlaerm', this)">Strassenlärm</button>
-    <button onclick="toggleLayer('Analysekarte-Fluglaerm', this)">Fluglärm</button>
+     <button onclick="toggleLayer('Zielkarte_Siedlung_Gemischt', this)">Siedlung Gemischt</button>
+     <button onclick="toggleLayer('Zielkarte_Siedlung_Aufstockung', this)">Siedlung Aufstockung</button>
+     <button onclick="toggleLayer('Zielkarte_Zentrum_Final', this)">Zentrum Final</button>
+     <button onclick="toggleLayer('Zielkarte_Zentrum_Alt', this)">Zentrum Alt</button>
+     <button onclick="toggleLayer('Zielkarte_Wege', this)">Wege</button>
+     <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Buslinie</button>
+     <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bushaltestellen</button>
   </div>
 
   <!-- Legend -->
@@ -313,7 +308,7 @@ function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
   // Special Group: only oneat the same time
-  const exclusiveLayers = ["Analysekarte-Eigentuemer", "Analysekarte-Bauzonen", "Analysekarte-Strassenlaerm"];
+  const exclusiveLayers = [["Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Aufstockung"], ["Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Alt"]];
 
   if (exclusiveLayers.includes(id)) {
     // Deaktivate all other
@@ -504,4 +499,5 @@ updateZoomDisplay();
 updateLegend();
 </script>
 </body>
+
 </html>
