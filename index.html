@@ -336,16 +336,26 @@ function toggleLayer(id, button) {
 
 /* Layer Legendeninfos */
 const layerLegends = [
-  { title: "Buslinie", layers: [{ id: "Zielkarte_Buslinie", items: [] }] },
-  { title: "Wege", layers: [{ id: "Zielkarte_Wege", items: [] }] },
-  { title: "Zentrum Alt", layers: [{ id: "Zielkarte_Zentrum_Alt", items: [] }] },
-  { title: "Zentrum Final", layers: [{ id: "Zielkarte_Zentrum_Final", items: [] }] },
-  { title: "Siedlung Aufstockung", layers: [{ id: "Zielkarte_Siedlung_Aufstockung", items: [] }] },
-  { title: "Siedlung Gemischt", layers: [{ id: "Zielkarte_Siedlung_Gemischt", items: [] }] },
-  { title: "Glatt", layers: [{ id: "Zielkarte_Glatt", items: [] }] },
-  { title: "Basekarte", layers: [{ id: "Zielkarte_Basekarte", items: [] }] },
-  { title: "Bushaltestellen", layers: [{ id: "Zielkarte_Bushaltestellen", items: [
+  { layers: [{ id: "Zielkarte_Basekarte", items: [
+      { label: "Laden", icon: "Grocery.png" },
+      { label: "Bank", icon: "Bench.png" },
+      { label: "Durchgang", icon: "Walkway.png" },
+      { label: "Garage", icon: "Garage.png" },
+      { label: "Baum", icon: "Tree.png" },
+      { label: "Tisch", icon: "Table.png" },
+      { label: "Spielplatz", icon: "Playground.png" },
+      { label: "Café", icon: "Cafe.png" },
+      { label: "Restaurant", icon: "Restaurant.png" },
+      { label: "Brunnen", icon: "Fountain.png" }
+  ]}] },
+  { layers: [{ id: "Zielkarte_Wege", items: [
+      { label: "Fehlende oder zu Verbessernde Wege", line: true, color: "#c30c00" }
+  ]}] },
+  { layers: [{ id: "Zielkarte_Bushaltestellen", items: [
     { label: "Bushaltestellen", icon: "Bushaltestellensymbol.png" }
+  ]}] },
+   { layers: [{ id: "Zielkarte_Buslinie", items: [
+      {label: "Geplante Buslinie", line: true, color: "#003399" }
   ]}] }
 ];
 
@@ -644,4 +654,5 @@ document.getElementById('Zielkarte_Zentrum_Final').style.display = 'block';
 document.getElementById('Zielkarte_Siedlung_Gemischt').style.display = 'block';
 updateZoomDisplay();
 updateLegend();
+
 
