@@ -304,17 +304,23 @@ function zoomDefault() {
 function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
-  // Special Group: only oneat the same time
-  const exclusiveLayers = [["Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Aufstockung"], ["Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Alt"]];
+  // Exclusivgruppen (nur 1 aktiv gleichzeitig)
+  const exclusiveLayers = [
+    ["Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Aufstockung"],
+    ["Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Alt"]
+  ];
 
-  if (exclusiveLayers.includes(id)) {
-    // Deaktivate all other
-    exclusiveLayers.forEach(layerId => {
+  // Prüfen, ob dieses ID in einer Exklusivgruppe ist
+  const group = exclusiveLayers.find(grp => grp.includes(id));
+
+  if (group) {
+    group.forEach(layerId => {
       if (layerId !== id) {
         const otherLayer = document.getElementById(layerId);
         const otherButton = Array.from(document.querySelectorAll('#buttons button'))
           .find(b => b.getAttribute('onclick')?.includes(layerId));
-        if (otherLayer.style.display === 'block') {
+
+        if (getComputedStyle(otherLayer).display === 'block') {
           otherLayer.style.display = 'none';
           otherButton?.classList.remove('active');
         }
@@ -322,7 +328,7 @@ function toggleLayer(id, button) {
     });
   }
 
-  // Standard Toggle
+  // Toggle the clicked layer
   if (el.style.display === 'block') {
     el.style.display = 'none';
     button.classList.remove('active');
@@ -330,8 +336,6 @@ function toggleLayer(id, button) {
     el.style.display = 'block';
     button.classList.add('active');
   }
-
-  updateLegend();
 }
 
 /* Export */
@@ -498,5 +502,6 @@ updateLegend();
 </body>
 
 </html>
+
 
 
