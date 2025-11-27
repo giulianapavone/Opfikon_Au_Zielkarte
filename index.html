@@ -257,10 +257,8 @@
   <div id="buttons">
     <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Buslinie</button>
     <button onclick="toggleLayer('Zielkarte_Wege', this)">Wege</button>
-    <button onclick="toggleLayer('Zielkarte_Zentrum_Alt', this)">Zentrum Alt</button>
-    <button onclick="toggleLayer('Zielkarte_Zentrum_Final', this)">Zentrum Final</button>
-    <button onclick="toggleLayer('Zielkarte_Siedlung_Aufstockung', this)">Siedlung Aufstockung</button>
-    <button onclick="toggleLayer('Zielkarte_Siedlung_Gemischt', this)">Siedlung Gemischt</button>
+    <button onclick="togglePair('Zentrum', this)">Zentrum</button>
+    <button onclick="togglePair('Siedlung', this)">Siedlung</button>
     <button onclick="toggleLayer('Zielkarte_Glatt', this)">Glatt</button>
     <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bushaltestellen</button>
   </div>
@@ -305,34 +303,52 @@ function zoomDefault() {
 function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
-  // Special Group: only oneat the same time
-  const exclusiveLayers = ["Analysekarte-Eigentuemer", "Analysekarte-Bauzonen", "Analysekarte-Strassenlaerm"];
+  // EXKLUSIVE PAARE (immer genau ein Layer sichtbar)
+  const exclusivePairs = {
+    Zentrum: ["Zielkarte_Zentrum_Alt", "Zielkarte_Zentrum_Final"],
+    Siedlung: ["Zielkarte_Siedlung_Aufstockung", "Zielkarte_Siedlung_Gemischt"]
+  };
 
-  if (exclusiveLayers.includes(id)) {
-    // Deaktivate all other
-    exclusiveLayers.forEach(layerId => {
-      if (layerId !== id) {
-        const otherLayer = document.getElementById(layerId);
-        const otherButton = Array.from(document.querySelectorAll('#buttons button'))
-          .find(b => b.getAttribute('onclick')?.includes(layerId));
-        if (otherLayer.style.display === 'block') {
-          otherLayer.style.display = 'none';
-          otherButton?.classList.remove('active');
-        }
-      }
-    });
+  // Prüfen, ob der Layer zu einem exklusiven Paar gehört
+  let isExclusive = false;
+  for (const pairName in exclusivePairs) {
+    const pair = exclusivePairs[pairName];
+    if (pair.includes(id)) {
+      isExclusive = true;
+
+      // Finden des anderen Layers im Paar
+      const otherId = pair.find(l => l !== id);
+      const otherEl = document.getElementById(otherId);
+      const otherButton = Array.from(document.querySelectorAll('#buttons button'))
+        .find(b => b.getAttribute('onclick')?.includes(otherId));
+
+      // Aktiviere diesen Layer, deaktiviere den anderen
+      el.style.display = "block";
+      button.classList.add("active");
+
+      otherEl.style.display = "none";
+      otherButton?.classList.remove("active");
+
+      // Optional: Buttontext wechseln
+      button.textContent = `${id} → ${otherId}`;
+
+      updateLegend();
+      return; // exklusives Paar fertig, Funktion beenden
+    }
   }
 
-  // Standard Toggle
-  if (el.style.display === 'block') {
-    el.style.display = 'none';
-    button.classList.remove('active');
-  } else {
-    el.style.display = 'block';
-    button.classList.add('active');
-  }
+  // ALLE ANDEREN LAYER: normale Toggle-Funktion
+  if (!isExclusive) {
+    if (el.style.display === 'block') {
+      el.style.display = 'none';
+      button.classList.remove('active');
+    } else {
+      el.style.display = 'block';
+      button.classList.add('active');
+    }
 
-  updateLegend();
+    updateLegend();
+  }
 }
 
 /* Layer Legendeninfos */
@@ -505,6 +521,12 @@ async function exportLegend() {
 }
 
 /* Init */
+document.getElementById("Zielkarte_Zentrum_Alt").style.display = "block";
+document.getElementById("Zielkarte_Zentrum_Final").style.display = "none";
+
+document.getElementById("Zielkarte_Siedlung_Aufstockung").style.display = "block";
+document.getElementById("Zielkarte_Siedlung_Gemischt").style.display = "none";
+
 document.getElementById('Zielkarte_Basekarte').style.display = 'block';
 document.getElementById('Zielkarte_Glatt').style.display = 'block';
 updateZoomDisplay();
@@ -513,4 +535,3 @@ updateLegend();
 </body>
 
 </html>
-
