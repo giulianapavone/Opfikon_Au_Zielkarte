@@ -256,11 +256,11 @@
 
   <!-- Layer buttons -->
   <div id="buttons">
-    <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Buslinie</button>
-    <button onclick="toggleLayer('Zielkarte_Wege', this)">Wege</button>
+    <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bestehende Bushaltestellen</button>
+    <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Auszubauende Buslinie</button>
+    <button onclick="toggleLayer('Zielkarte_Wege', this)">Auszubauende Wege</button>
     <button onclick="togglePair('Zentrum', this)">Zentrums-Version wechseln</button>
     <button onclick="togglePair('Siedlung', this)">Siedlungs-Version wechseln</button>
-    <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bushaltestellen</button>
   </div>
 
   <!-- Legend -->
@@ -355,13 +355,13 @@ const layerLegends = [
       { label: "Brunnen", icon: "Fountain.png" }
   ]}] },
   { title: "", layers: [{ id: "Zielkarte_Bushaltestellen", items: [
-    { label: "Bushaltestellen", icon: "Bushaltestellensymbol.png" }
+    { label: "Bereits bestehende Bushaltestellen", icon: "Bushaltestellensymbol.png" }
   ]}] },
   { title: "", layers: [{ id: "Zielkarte_Buslinie", items: [
-      {label: "Geplante Buslinie", line: true, color: "#003399" }
+      {label: "Geplante zusätzliche Buslinie", line: true, color: "#003399" }
   ]}] },
   { title: "", layers: [{ id: "Zielkarte_Wege", items: [
-      { label: "Fehlende oder zu Verbessernde Wege", line: true, color: "#c30c00" }
+      { label: "Fehlende oder zu verbessernde Wege", line: true, color: "#c30c00" }
   ]}] }
 ];
 
@@ -525,6 +525,7 @@ updateLegend();
 </body>
 
 </html>
+
 
 
 
