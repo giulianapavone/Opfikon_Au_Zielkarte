@@ -257,8 +257,8 @@
   <div id="buttons">
     <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Buslinie</button>
     <button onclick="toggleLayer('Zielkarte_Wege', this)">Wege</button>
-    <button onclick="toggleLayer('Zentrum', this)">Zentrum</button>
-    <button onclick="toggleLayer('Siedlung', this)">Siedlung</button>
+    <button onclick="togglePair('Zentrum', this)">Zentrum</button>
+    <button onclick="togglePair('Siedlung', this)">Siedlung</button>
     <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bushaltestellen</button>
   </div>
 
@@ -299,55 +299,44 @@ function zoomDefault() {
 }
 
 /* Layer toggle */
+const exclusivePairs = {
+  Zentrum: ["Zielkarte_Zentrum_Alt", "Zielkarte_Zentrum_Final"],
+  Siedlung: ["Zielkarte_Siedlung_Aufstockung", "Zielkarte_Siedlung_Gemischt"]
+};
+
+function togglePair(pairName, button) {
+  const pair = exclusivePairs[pairName];
+
+  // Finde aktuellen sichtbaren Layer
+  const currentVisible = pair.find(id => getComputedStyle(document.getElementById(id)).display === 'block');
+  const nextLayer = pair.find(id => id !== currentVisible);
+
+  // Schalte Layer um
+  document.getElementById(currentVisible).style.display = 'none';
+  document.getElementById(nextLayer).style.display = 'block';
+
+  // Buttons aktualisieren
+  const buttons = Array.from(document.querySelectorAll('#buttons button'));
+  pair.forEach(id => {
+    const btn = buttons.find(b => b.textContent.includes(pairName));
+    if (btn) btn.classList.toggle('active', id === nextLayer);
+  });
+
+  updateLegend();
+}
+
 function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
-  // EXKLUSIVE PAARE (immer genau ein Layer sichtbar)
-  const exclusivePairs = {
-    Zentrum: ["Zielkarte_Zentrum_Alt", "Zielkarte_Zentrum_Final"],
-    Siedlung: ["Zielkarte_Siedlung_Aufstockung", "Zielkarte_Siedlung_Gemischt"]
-  };
-
-  // Prüfen, ob der Layer zu einem exklusiven Paar gehört
-  let isExclusive = false;
-  for (const pairName in exclusivePairs) {
-    const pair = exclusivePairs[pairName];
-    if (pair.includes(id)) {
-      isExclusive = true;
-
-      // Finden des anderen Layers im Paar
-      const otherId = pair.find(l => l !== id);
-      const otherEl = document.getElementById(otherId);
-      const otherButton = Array.from(document.querySelectorAll('#buttons button'))
-        .find(b => b.getAttribute('onclick')?.includes(otherId));
-
-      // Aktiviere diesen Layer, deaktiviere den anderen
-      el.style.display = "block";
-      button.classList.add("active");
-
-      otherEl.style.display = "none";
-      otherButton?.classList.remove("active");
-
-      // Optional: Buttontext wechseln
-      button.textContent = `${id} → ${otherId}`;
-
-      updateLegend();
-      return; // exklusives Paar fertig, Funktion beenden
-    }
+  if (getComputedStyle(el).display === 'block') {
+    el.style.display = 'none';
+    button.classList.remove('active');
+  } else {
+    el.style.display = 'block';
+    button.classList.add('active');
   }
 
-  // ALLE ANDEREN LAYER: normale Toggle-Funktion
-  if (!isExclusive) {
-    if (el.style.display === 'block') {
-      el.style.display = 'none';
-      button.classList.remove('active');
-    } else {
-      el.style.display = 'block';
-      button.classList.add('active');
-    }
-
-    updateLegend();
-  }
+  updateLegend();
 }
 
 /* Layer Legendeninfos */
@@ -520,12 +509,13 @@ async function exportLegend() {
 }
 
 /* Init */
-document.getElementById("Zielkarte_Zentrum_Alt").style.display = "block";
-document.getElementById("Zielkarte_Zentrum_Final").style.display = "none";
+// Exklusive Paare: jeweils erster Layer sichtbar
+document.getElementById("Zielkarte_Zentrum_Alt").style.display = "none";
+document.getElementById("Zielkarte_Zentrum_Final").style.display = "block";
+document.getElementById("Zielkarte_Siedlung_Aufstockung").style.display = "none";
+document.getElementById("Zielkarte_Siedlung_Gemischt").style.display = "block";
 
-document.getElementById("Zielkarte_Siedlung_Aufstockung").style.display = "block";
-document.getElementById("Zielkarte_Siedlung_Gemischt").style.display = "none";
-
+// Permanente Layer
 document.getElementById('Zielkarte_Basekarte').style.display = 'block';
 document.getElementById('Zielkarte_Glatt').style.display = 'block';
 updateZoomDisplay();
