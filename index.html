@@ -354,15 +354,20 @@ const layerLegends = [
       { label: "Restaurant", icon: "Restaurant.png" },
       { label: "Brunnen", icon: "Fountain.png" }
   ]}] },
-  { title: "", layers: [{ id: "Zielkarte_Bushaltestellen", items: [
+  { title: "Stockwerkanzahl", layers: [{ id: "Zielkarte_Basekarte", items: [
+      { label: "4-Stöckig", color: "#ee9898" },
+      { label: "5-Stöckig", color: "#989dbe" },
+  ]}] },
+  { title: "Netz", layers: [
+  { id: "Zielkarte_Bushaltestellen", items: [
     { label: "Bereits bestehende Bushaltestellen", icon: "Bushaltestellensymbol.png" }
-  ]}] },
-  { title: "", layers: [{ id: "Zielkarte_Buslinie", items: [
+  ]},
+  { id: "Zielkarte_Buslinie", items: [
       {label: "Geplante zusätzliche Buslinie", line: true, color: "#003399" }
-  ]}] },
-  { title: "", layers: [{ id: "Zielkarte_Wege", items: [
+  ]},
+  { id: "Zielkarte_Wege", items: [
       { label: "Fehlende oder zu verbessernde Wege", line: true, color: "#c30c00" }
-  ]}] }
+  ]}]}
 ];
 
 /* Legende updaten */
@@ -525,6 +530,7 @@ updateLegend();
 </body>
 
 </html>
+
 
 
 
