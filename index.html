@@ -342,7 +342,7 @@ function toggleLayer(id, button) {
 
 /* Layer Legendeninfos */
 const layerLegends = [
-  { title: "Konzeptsymbole", layers: [{ id: "Zielkarte_Basekarte", items: [
+  { title: "Konzeptsymbole", layers: [{ id: ["Zielkarte_Zentrum_Alt, Zielkarte_Zentrum_Final, Zielkarte_Siedlung_Gemischt, Zielkarte_Siedlung"], items: [
       { label: "Laden", icon: "Grocery.png" },
       { label: "Bank", icon: "Bench.png" },
       { label: "Durchgang", icon: "Walkway.png" },
@@ -383,7 +383,10 @@ function updateLegend() {
   legendList.innerHTML = '';
 
   layerLegends.forEach(group => {
-    const activeLayers = group.layers.filter(layer => getComputedStyle(document.getElementById(layer.id)).display === 'block');
+    const activeLayers = group.layers.filter(layer => {
+      const ids = Array.isArray(layer.id) ? layer.id : [layer.id];
+      return ids.some(id => document.getElementById(id).style.display === 'block');
+    });
     if (activeLayers.length > 0) {
       // Gruppenüberschrift
       const liGroup = document.createElement('li');
@@ -530,6 +533,7 @@ updateLegend();
 </body>
 
 </html>
+
 
 
 
