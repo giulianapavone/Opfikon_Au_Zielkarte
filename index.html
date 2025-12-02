@@ -57,15 +57,18 @@
   }
 
   /* Layer order */
-  #Zielkarte_Buslinie { z-index: 0; }
-  #Zielkarte_Zentrum_Alt { z-index: 1; }
-  #Zielkarte_Zentrum_Final { z-index: 2; display: block; }
-  #Zielkarte_Siedlung_Aufstockung { z-index: 3; }
-  #Zielkarte_Siedlung_Gemischt { z-index: 4; display: block; }
-  #Zielkarte_Glatt { z-index: 5; display: block; }
-  #Zielkarte_Wege { z-index: 6; }
-  #Zielkarte_Basekarte { z-index: 7; display: block; }
-  #Zielkarte_Bushaltestellen { z-index: 8; }
+  #Zielkarte_Wallisellerstrasse { z-index: 0; }
+  #Zielkarte_Buslinie { z-index: 1; }
+  #Zielkarte_Zentrum_Alt { z-index: 2; }
+  #Zielkarte_Zentrum_Final { z-index: 3; }
+  #Zielkarte_Zentrum_Original { z-index: 4; }
+  #Zielkarte_Siedlung_Aufstockung { z-index: 5; }
+  #Zielkarte_Siedlung_Gemischt { z-index: 6; }
+  #Zielkarte_Siedlung_Original { z-index: 7; 
+  #Zielkarte_Glatt { z-index: 8; display: block; }
+  #Zielkarte_Wege { z-index: 9; }
+  #Zielkarte_Basekarte { z-index: 10; display: block; }
+  #Zielkarte_Bushaltestellen { z-index: 11; }
 
   /* Sidebar */
   #sidebar {
@@ -239,6 +242,9 @@
       <img src="Zielkarte_Siedlung_Aufstockung.png" class="layer" id="Zielkarte_Siedlung_Aufstockung" alt="Siedlung Aufstockung">
       <img src="Zielkarte_Siedlung_Gemischt.png" class="layer" id="Zielkarte_Siedlung_Gemischt" alt="Siedlung Gemischt">
       <img src="Zielkarte_Bushaltestellen.png" class="layer" id="Zielkarte_Bushaltestellen" alt="Bushaltestellen">
+      <img src="Zielkarte_Wallisellerstrasse.png" class="layer" id="Zielkarte_Wallisellerstrasse">
+      <img src="Zielkarte_Zentrum_Original.png" class="layer" id="Zielkarte_Zentrum_Original">
+      <img src="Zielkarte_Siedlung_Original.png" class="layer" id="Zielkarte_Siedlung_Original">
     </div>
   </div>
 </div>
@@ -301,8 +307,8 @@ function zoomDefault() {
 
 /* Layer toggle */
 const exclusivePairs = {
-  Zentrum: ["Zielkarte_Zentrum_Alt", "Zielkarte_Zentrum_Final"],
-  Siedlung: ["Zielkarte_Siedlung_Aufstockung", "Zielkarte_Siedlung_Gemischt"]
+  Zentrum: ["Zielkarte_Zentrum_Alt", "Zielkarte_Zentrum_Final", "Zielkarte_Zentrum_Original"],
+  Siedlung: ["Zielkarte_Siedlung_Aufstockung", "Zielkarte_Siedlung_Gemischt", "Zielkarte_Siedlung_Original"]
 };
 
 function togglePair(pairName, button) {
@@ -520,9 +526,11 @@ async function exportLegend() {
 /* Init */
 // Exklusive Paare: jeweils erster Layer sichtbar
 document.getElementById("Zielkarte_Zentrum_Alt").style.display = "none";
-document.getElementById("Zielkarte_Zentrum_Final").style.display = "block";
+document.getElementById("Zielkarte_Zentrum_Final").style.display = "none";
+document.getElementById("Zielkarte_Zentrum_Original").style.display = "block";
 document.getElementById("Zielkarte_Siedlung_Aufstockung").style.display = "none";
-document.getElementById("Zielkarte_Siedlung_Gemischt").style.display = "block";
+document.getElementById("Zielkarte_Siedlung_Gemischt").style.display = "none";
+document.getElementById("Zielkarte_Siedlung_Original").style.display = "block";
 
 // Permanente Layer
 document.getElementById('Zielkarte_Basekarte').style.display = 'block';
@@ -533,12 +541,3 @@ updateLegend();
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
