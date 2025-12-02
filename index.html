@@ -314,20 +314,20 @@ const exclusivePairs = {
 function togglePair(pairName, button) {
   const pair = exclusivePairs[pairName];
 
-  // Finde aktuellen sichtbaren Layer
-  const currentVisible = pair.find(id => getComputedStyle(document.getElementById(id)).display === 'block');
-  const nextLayer = pair.find(id => id !== currentVisible);
+  // Liste aller Layer in der richtigen Reihenfolge im Array
+  const visibleIndex = pair.findIndex(id => getComputedStyle(document.getElementById(id)).display === 'block');
 
-  // Schalte Layer um
-  document.getElementById(currentVisible).style.display = 'none';
-  document.getElementById(nextLayer).style.display = 'block';
+  // Nächster Index (zyklisch)
+  const nextIndex = (visibleIndex + 1) % pair.length;
 
-  // Buttons aktualisieren
+  // Umschalten
+  pair.forEach(id => document.getElementById(id).style.display = 'none');
+  document.getElementById(pair[nextIndex]).style.display = 'block';
+
+  // Button-Highlight bleibt gleich (ein Button für alle Versionen)
   const buttons = Array.from(document.querySelectorAll('#buttons button'));
-  pair.forEach(id => {
-    const btn = buttons.find(b => b.textContent.includes(pairName));
-    if (btn) btn.classList.toggle('active', id === nextLayer);
-  });
+  const btn = buttons.find(b => b.textContent.includes(pairName));
+  if (btn) btn.classList.add('active');
 
   updateLegend();
 }
@@ -541,4 +541,5 @@ updateLegend();
 </body>
 
 </html>
+
 
