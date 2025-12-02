@@ -314,20 +314,20 @@ const exclusivePairs = {
 function togglePair(pairName, button) {
   const pair = exclusivePairs[pairName];
 
-  // Liste aller Layer in der richtigen Reihenfolge im Array
   const visibleIndex = pair.findIndex(id => getComputedStyle(document.getElementById(id)).display === 'block');
-
-  // Nächster Index (zyklisch)
   const nextIndex = (visibleIndex + 1) % pair.length;
 
-  // Umschalten
+  // Alle Layer ausblenden, neuen Layer einblenden
   pair.forEach(id => document.getElementById(id).style.display = 'none');
-  document.getElementById(pair[nextIndex]).style.display = 'block';
+  const nextLayerId = pair[nextIndex];
+  document.getElementById(nextLayerId).style.display = 'block';
 
-  // Button-Highlight bleibt gleich (ein Button für alle Versionen)
-  const buttons = Array.from(document.querySelectorAll('#buttons button'));
-  const btn = buttons.find(b => b.textContent.includes(pairName));
-  if (btn) btn.classList.add('active');
+  // Button nur aktiv, wenn nicht Original-Layer
+  if (button) {
+    const originalId = pair.find(id => id.includes('Original'));
+    const isOriginal = getComputedStyle(document.getElementById(originalId)).display === 'block';
+    button.classList.toggle('active', !isOriginal);
+  }
 
   updateLegend();
 }
@@ -335,12 +335,21 @@ function togglePair(pairName, button) {
 function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
-  if (getComputedStyle(el).display === 'block') {
-    el.style.display = 'none';
-    button.classList.remove('active');
-  } else {
-    el.style.display = 'block';
-    button.classList.add('active');
+  // Sonderfall: Wege-Button soll auch Wallisellerstrasse betreffen
+  const relatedLayers = id === 'Zielkarte_Wege' ? [id, 'Zielkarte_Wallisellerstrasse'] : [id];
+
+  const isActive = getComputedStyle(el).display === 'block';
+
+  relatedLayers.forEach(layerId => {
+    const layerEl = document.getElementById(layerId);
+    layerEl.style.display = isActive ? 'none' : 'block';
+  });
+
+  // Button-Farbe aktualisieren
+  if (button) {
+    // Wege-Button nur aktiv, wenn mindestens einer der beiden Layer sichtbar ist
+    const anyVisible = relatedLayers.some(layerId => getComputedStyle(document.getElementById(layerId)).display === 'block');
+    button.classList.toggle('active', anyVisible);
   }
 
   updateLegend();
@@ -541,6 +550,7 @@ updateLegend();
 </body>
 
 </html>
+
 
 
 
