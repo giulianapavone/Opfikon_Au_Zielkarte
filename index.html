@@ -493,7 +493,7 @@ async function exportVisibleLayers() {
   }
 
   const link = document.createElement('a');
-  link.download = 'Analysekarte.png';
+  link.download = 'Zielkarte.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
 }
@@ -527,7 +527,7 @@ async function exportLegend() {
   document.body.removeChild(exportWrapper);
 
   const link = document.createElement('a');
-  link.download = 'Analysekarte_Legende.png';
+  link.download = 'Zielkarte_Legende.png';
   link.href = canvas.toDataURL('image/png');
   link.click();
 }
@@ -550,8 +550,3 @@ updateLegend();
 </body>
 
 </html>
-
-
-
-
-
