@@ -57,7 +57,6 @@
   }
 
   /* Layer order */
-  #Zielkarte_Wallisellerstrasse { z-index: 0; }
   #Zielkarte_Buslinie { z-index: 1; }
   #Zielkarte_Zentrum_Alt { z-index: 2; }
   #Zielkarte_Zentrum_Final { z-index: 3; }
@@ -69,6 +68,8 @@
   #Zielkarte_Wege { z-index: 9; }
   #Zielkarte_Basekarte { z-index: 10; display: block; }
   #Zielkarte_Bushaltestellen { z-index: 11; }
+  #Zielkarte_Neuer_Fussgaengerstreifen { z-index: 12; }
+  #Zielkarte_Fussgaengerstreifen { z-index: 13; }
 
   /* Sidebar */
   #sidebar {
@@ -242,7 +243,8 @@
       <img src="Zielkarte_Siedlung_Aufstockung.png" class="layer" id="Zielkarte_Siedlung_Aufstockung" alt="Siedlung Aufstockung">
       <img src="Zielkarte_Siedlung_Gemischt.png" class="layer" id="Zielkarte_Siedlung_Gemischt" alt="Siedlung Gemischt">
       <img src="Zielkarte_Bushaltestellen.png" class="layer" id="Zielkarte_Bushaltestellen" alt="Bushaltestellen">
-      <img src="Zielkarte_Wallisellerstrasse.png" class="layer" id="Zielkarte_Wallisellerstrasse">
+      <img src="Zielkarte_Neuer_Fussgaengerstreifen.png" class="layer" id="Zielkarte_Neuer_Fussgaengerstreifen">
+      <img src="Zielkarte_Fussgaengerstreifen.png" class="layer" id="Zielkarte_Fussgaengerstreifen">
       <img src="Zielkarte_Zentrum_Original.png" class="layer" id="Zielkarte_Zentrum_Original">
       <img src="Zielkarte_Siedlung_Original.png" class="layer" id="Zielkarte_Siedlung_Original">
     </div>
@@ -264,6 +266,7 @@
   <div id="buttons">
     <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bestehende Bushaltestellen</button>
     <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Auszubauende Buslinie</button>
+    <button onclick="toggleLayer('Zielkarte_Fussgaengerstreifen', this)">Bestehende Fussgängerstreifen</button>
     <button onclick="toggleLayer('Zielkarte_Wege', this)">Auszubauende Wege</button>
     <button onclick="togglePair('Zentrum', this)">Zentrums-Versionen</button>
     <button onclick="togglePair('Siedlung', this)">Siedlungs-Versionen</button>
@@ -335,8 +338,8 @@ function togglePair(pairName, button) {
 function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
-  // Sonderfall: Wege-Button soll auch Wallisellerstrasse betreffen
-  const relatedLayers = id === 'Zielkarte_Wege' ? [id, 'Zielkarte_Wallisellerstrasse'] : [id];
+  // Sonderfall: Wege-Button soll auch Neuer_Fussgaengerstreifen betreffen
+  const relatedLayers = id === 'Zielkarte_Wege' ? [id, 'Zielkarte_Neuer_Fussgaengerstreifen'] : [id];
 
   const isActive = getComputedStyle(el).display === 'block';
 
@@ -378,7 +381,11 @@ const layerLegends = [
     { label: "Bereits bestehende Bushaltestellen", icon: "Bushaltestellensymbol.png" }
   ]},
   { id: "Zielkarte_Buslinie", items: [
-      {label: "Geplante zusätzliche Buslinie", line: true, color: "#003399" }
+      { label: "Geplante zusätzliche Buslinie", line: true, color: "#003399" },
+      { label: "Fehlende Fussgaengerstreifen", icon: "Fussgaengerstreifensymbol.png" }
+  ]},
+  { id: "Zielkarte_Fussgaengerstreifen", items: [
+      { label: "Bereits bestehende Fussgaengerstreifen", icon: "Fussgaengerstreifensymbol.png" }
   ]},
   { id: "Zielkarte_Wege", items: [
       { label: "Fehlende oder zu verbessernde Wege", line: true, color: "#c30c00" }
@@ -550,3 +557,4 @@ updateLegend();
 </body>
 
 </html>
+
