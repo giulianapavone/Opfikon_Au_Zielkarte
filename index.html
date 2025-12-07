@@ -57,19 +57,19 @@
   }
 
   /* Layer order */
-  #Zielkarte_Buslinie { z-index: 1; }
-  #Zielkarte_Zentrum_Alt { z-index: 2; }
-  #Zielkarte_Zentrum_Final { z-index: 3; }
-  #Zielkarte_Zentrum_Original { z-index: 4; }
-  #Zielkarte_Siedlung_Aufstockung { z-index: 5; }
-  #Zielkarte_Siedlung_Gemischt { z-index: 6; }
-  #Zielkarte_Siedlung_Original { z-index: 7; }
-  #Zielkarte_Glatt { z-index: 8; display: block; }
-  #Zielkarte_Wege { z-index: 9; }
-  #Zielkarte_Basekarte { z-index: 10; display: block; }
-  #Zielkarte_Bushaltestellen { z-index: 11; }
-  #Zielkarte_Neuer_Fussgaengerstreifen { z-index: 12; }
-  #Zielkarte_Fussgaengerstreifen { z-index: 13; }
+  #Zielkarte_Zentrum_Alt { z-index: 0; }
+  #Zielkarte_Zentrum_Final { z-index: 1; }
+  #Zielkarte_Zentrum_Original { z-index: 2; }
+  #Zielkarte_Siedlung_Aufstockung { z-index: 3; }
+  #Zielkarte_Siedlung_Gemischt { z-index: 4; }
+  #Zielkarte_Siedlung_Original { z-index: 5; }
+  #Zielkarte_Glatt { z-index: 6; display: block; }
+  #Zielkarte_Wege2 { z-index: 7; }
+  #Zielkarte_Buslinie { z-index: 8; }
+  #Zielkarte_Basekarte { z-index: 9; display: block; }
+  #Zielkarte_Bushaltestellen { z-index: 10; }
+  #Zielkarte_Neuer_Fussgaengerstreifen { z-index: 11; }
+  #Zielkarte_Fussgaengerstreifen { z-index: 12; }
 
   /* Sidebar */
   #sidebar {
@@ -237,7 +237,7 @@
       <img src="Zielkarte_Basekarte.png" class="layer" id="Zielkarte_Basekarte" alt="Basekarte">
       <img src="Zielkarte_Glatt.png" class="layer" id="Zielkarte_Glatt" alt="Glatt">
       <img src="Zielkarte_Buslinie.png" class="layer" id="Zielkarte_Buslinie" alt="Buslinie">
-      <img src="Zielkarte_Wege.png" class="layer" id="Zielkarte_Wege" alt="Wege">
+      <img src="Zielkarte_Wege2.png" class="layer" id="Zielkarte_Wege2" alt="Wege">
       <img src="Zielkarte_Zentrum_Alt.png" class="layer" id="Zielkarte_Zentrum_Alt" alt="Zentrum Alt">
       <img src="Zielkarte_Zentrum_Final.png" class="layer" id="Zielkarte_Zentrum_Final" alt="Zentrum Final">
       <img src="Zielkarte_Siedlung_Aufstockung.png" class="layer" id="Zielkarte_Siedlung_Aufstockung" alt="Siedlung Aufstockung">
@@ -267,7 +267,7 @@
     <button onclick="toggleLayer('Zielkarte_Bushaltestellen', this)">Bestehende Bushaltestellen</button>
     <button onclick="toggleLayer('Zielkarte_Buslinie', this)">Auszubauende Buslinie</button>
     <button onclick="toggleLayer('Zielkarte_Fussgaengerstreifen', this)">Bestehende Fussgängerstreifen</button>
-    <button onclick="toggleLayer('Zielkarte_Wege', this)">Auszubauende Wege</button>
+    <button onclick="toggleLayer('Zielkarte_Wege2', this)">Auszubauende Wege</button>
     <button onclick="togglePair('Zentrum', this)">Zentrums-Versionen</button>
     <button onclick="togglePair('Siedlung', this)">Siedlungs-Versionen</button>
   </div>
@@ -339,7 +339,7 @@ function toggleLayer(id, button) {
   const el = document.getElementById(id);
 
   // Sonderfall: Wege-Button soll auch Neuer_Fussgaengerstreifen betreffen
-  const relatedLayers = id === 'Zielkarte_Wege' ? [id, 'Zielkarte_Neuer_Fussgaengerstreifen'] : [id];
+  const relatedLayers = id === 'Zielkarte_Wege2' ? [id, 'Zielkarte_Neuer_Fussgaengerstreifen'] : [id];
 
   const isActive = getComputedStyle(el).display === 'block';
 
@@ -387,7 +387,7 @@ const layerLegends = [
   { id: "Zielkarte_Fussgaengerstreifen", items: [
       { label: "Bereits bestehende Fussgaengerstreifen", icon: "Fussgaengerstreifensymbol.png" }
   ]},
-  { id: "Zielkarte_Wege", items: [
+  { id: "Zielkarte_Wege2", items: [
       { label: "Fehlende oder zu verbessernde Wege", line: true, color: "#c30c00" }
   ]}]}
 ];
@@ -557,4 +557,5 @@ updateLegend();
 </body>
 
 </html>
+
 
